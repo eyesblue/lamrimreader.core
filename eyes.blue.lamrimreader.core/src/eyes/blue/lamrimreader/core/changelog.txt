@@ -1,0 +1,3 @@
+Version 1.0.1
+1. 修正 SubtitleUtil.getNameId 輸出數字5碼改為3碼。
+2. 刪除PLIndex.setLength()函示，因為該變數為 public，直接修改即可。

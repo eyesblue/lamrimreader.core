@@ -17,7 +17,6 @@ public class BookMapUtil {
 
         String[] recStr=data.split(";");
         int[][] rec=new int[recStr.length][6];
-        PLIndex[] plIndexs=new PLIndex[recStr.length];
 
         for(int i=0;i<recStr.length;i++){
             String[] eleStr=recStr[i].split(",");

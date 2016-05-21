@@ -24,8 +24,4 @@ public class PLIndex {
         PLIndex pli=(PLIndex)obj;
         return (page == pli.page && line == pli.line && index == pli.index);
     }
-
-    public void setLength(int length){
-        this.length=length;
-    }
 }

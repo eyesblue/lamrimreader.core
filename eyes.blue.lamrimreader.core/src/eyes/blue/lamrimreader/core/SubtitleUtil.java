@@ -9,6 +9,41 @@ import java.util.ArrayList;
  * Created by father on 16/5/17.
  */
 public class SubtitleUtil {
+	/*
+	 * 回傳該數字所代表的音檔識別字串(001A, 001B, 002A, 002B, 003A ... 160B)，輸入範圍介於 0 ~ 319
+	 * */
+	public static String getNameId(int i){
+		String result=null;
+		try{
+			int num=(i/2)+1;
+			char sign=((i%2==0)?'A':'B');
+			result=String.format("%03d", num)+sign;
+		}catch(ArrayIndexOutOfBoundsException e){
+			throw new ArrayIndexOutOfBoundsException();
+		}
+				
+		return result;
+	}
+
+	/*
+	 * 將音檔識別字串轉換成數字代號(001A=0, 001B=1, 002A=2, 002B=3, 003A=4 ... 160B=319)
+	 * */
+	public static int getNameToId(String str){
+		int res=-1;
+		str=str.toUpperCase();
+		if(str.matches("\\d+A") || str.matches("\\d+B")){
+			res=Integer.parseInt(str.substring(0, str.length()-1));
+			res*=2;
+			if(str.charAt(str.length()-1)=='A')
+				res-=2;
+			else if(str.charAt(str.length()-1)=='B')
+				res-=1;
+			else return -1;
+		}
+		
+		return res;
+	}
+	
     /*
 		 * While start playing, there may not have subtitle yet, it will return -1, except array index n.
 		 * */
