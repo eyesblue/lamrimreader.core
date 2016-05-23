@@ -1,3 +1,8 @@
+Version 1.0.2
+1. 改善 TheoryUtil.getContentStr() 輸出效率。
+2. 移除冗餘的程式碼。
+
 Version 1.0.1
 1. 修正 SubtitleUtil.getNameId 輸出數字5碼改為3碼。
 2. 刪除PLIndex.setLength()函示，因為該變數為 public，直接修改即可。
+

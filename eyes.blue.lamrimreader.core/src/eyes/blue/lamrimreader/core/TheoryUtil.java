@@ -104,9 +104,7 @@ public class TheoryUtil {
 
     public LinearIndex[] getHighlightMark(PLIndex pli){
         int index= pliToLinearIndex(pli.page, pli.line, pli.index);
-        if(debug)System.out.println("Set highlight word at page "+pli.page+", index "+index+", length "+pli.length);
         String sample=getContentStr(pli.page,0,TO_END);
-        if(debug)System.out.println("startIndex+length="+(index+pli.length)+", sample length="+sample.length());
         if(index+pli.length<sample.length()){
             if(debug)System.out.println("The highlight in one page");
             return new LinearIndex[]{new LinearIndex(pli.page, index, pli.length)};
@@ -146,8 +144,7 @@ public class TheoryUtil {
         if(startWord<0)startLine--;
         if(startLine<0)startPage--;
         if(startPage<0)return null;
-
-        if(debug)System.out.println("Call pliToLinearIndex(page="+startPage+", line="+startLine+", word="+startWord+")");
+        
         int startIndex= pliToLinearIndex(startPage, startLine, startWord);
 
         String sample=getContentStr(startPage, startIndex, TO_START);
@@ -162,18 +159,15 @@ public class TheoryUtil {
                 sample=getContentStr(rangePageEnd,0,TO_END)+sample;
                 pageLen[pageIndex][0]=rangePageEnd;
                 pageLen[pageIndex][1]=sample.length();
-                if(debug)System.out.println("Add page "+rangePageEnd+" to sample");
             }
 
             int searchResult=searchString(sample,str,TO_START);
             if(searchResult==-1){
                 rangePageStart=rangePageEnd;
-                //int len=sample.length()-str.length()+1;
                 sample=sample.substring(0,str.length()-1);
                 pageIndex=0;
                 pageLen[0][0]=rangePageStart;
                 pageLen[0][1]=str.length()-1;
-                if(debug)System.out.println("Not found, sample ="+sample);
             }
             else{
                 if(debug)System.out.println("Found at "+searchResult+" of "+sample);
@@ -183,16 +177,11 @@ public class TheoryUtil {
                         if(i==0){
                             String pageContent=getContentStr(pageLen[i][0], 0,TO_END);
                             index=searchResult-str.length()+1;
-                            if(debug)System.out.println("Page content length="+pageContent.length()+", Start index = "+index);
                         }
-                        else {
+                        else
                             index=searchResult-pageLen[i-1][1];
-                            if(debug)System.out.println("searchResult("+searchResult+") - page index["+(i-1)+"][1]("+pageLen[i-1][1]+") = "+index);
-                        }
 
-                        PLIndex ret= linearToPLIndex(pageLen[i][0], index);
-                        if(debug)System.out.println("Found at page="+ret.page+", line="+ret.line+", word="+ret.index);
-                        return ret;
+                        return linearToPLIndex(pageLen[i][0], index);
                     }
                 }
             }
@@ -226,14 +215,12 @@ public class TheoryUtil {
         pageLen[0][1]=sample.length();
         while(rangePageEnd<endPage){
             while(sample.length()<str.length()){
-                if(debug) System.out.println("Sample="+sample+"sample length="+sample.length()+", str length="+str.length());
                 ++pageIndex;
                 if(++rangePageEnd>=bookContent.length)return null;  // The rest length of content not longer then searching string.
 
                 sample+=getContentStr(rangePageEnd,0,TO_END);
                 pageLen[pageIndex][0]=rangePageEnd;
                 pageLen[pageIndex][1]=sample.length();
-                if(debug)System.out.println("Add page "+rangePageEnd+" to sample");
             }
 
             int searchResult=searchString(sample,str,TO_END);
@@ -244,27 +231,19 @@ public class TheoryUtil {
                 pageIndex=0;
                 pageLen[0][0]=rangePageStart;
                 pageLen[0][1]=sample.length();
-                if(debug)System.out.println("Not found, sample ="+sample);
             }
             else{
-                if(debug)System.out.println("Found at "+searchResult+" of "+sample);
                 for(int i=0;i<=pageIndex;i++){
                     if(searchResult<pageLen[i][1]){
-
                         int index=0;
                         if(i==0){
                             String pageContent=getContentStr(pageLen[i][0], 0,TO_END);
                             index=pageContent.length()-pageLen[i][1]+searchResult;
-                            if(debug)System.out.println("Page content length="+pageContent.length()+", Start index = "+index);
                         }
-                        else {
+                        else
                             index=searchResult-pageLen[i-1][1];
-                            if(debug)System.out.println("searchResult("+searchResult+") - page index["+(i-1)+"][1]("+pageLen[i-1][1]+") = "+index);
-                        }
 
-                        PLIndex ret= linearToPLIndex(pageLen[i][0],index);
-                        if(debug)System.out.println("Found at page="+ret.page+", line="+ret.line+", word="+ret.index);
-                        return ret;
+                        return linearToPLIndex(pageLen[i][0],index);
                     }
                 }
             }
@@ -295,15 +274,13 @@ public class TheoryUtil {
                         }
                         break;
                     }
-                    // System.out.print("Compare: "+sample.charAt(i-j-shift)+" and "+str.charAt(str.length()-1-j));
-                    if(sample.charAt(i-j-shift) != str.charAt(str.length()-1-j)){
-                        if(debug) System.out.println();
+
+                    if(sample.charAt(i-j-shift) != str.charAt(str.length()-1-j))
                         break;
-                    }
-                    if(j==str.length()-1){
-                        if(debug)System.out.println(" match!");
+                    
+                    if(j==str.length()-1)
                         return i-shift;
-                    }
+                    
                 }
             }
 
@@ -326,16 +303,12 @@ public class TheoryUtil {
                     break;
                 }
 
-                //System.out.print("Compare: "+sample.charAt(i+j+shift)+" and "+str.charAt(j));
-
-                if(sample.charAt(i+j+shift) != str.charAt(j)){
-                    if(debug)System.out.println();
+                if(sample.charAt(i+j+shift) != str.charAt(j))
                     break;
-                }
-                if(j==str.length()-1){
-                    if(debug)System.out.println(" match!");
+                
+                if(j==str.length()-1)
                     return i;
-                }
+                
             }
         }
         return -1;
@@ -363,18 +336,9 @@ public class TheoryUtil {
         if(lineIndex==-1)return len[line.length-1];
         if(word==-1)return len[lineIndex];
 
-        // Debug
-        for(int i=0;i<line.length;i++)
-            if(debug) System.out.println(line[i]+"\n"+len[i]);
+        if(lineIndex==0)return word;
+        return len[lineIndex-1]+word;
 
-        int index=-1;
-        if(lineIndex==0)index = word;
-        else index = len[lineIndex-1]+word;
-
-        try{
-            if(debug)System.out.println("Exam the index("+index+") of word = "+sample.charAt(index));
-        }catch(Exception e){e.printStackTrace();}
-        return index;
     }
 
     public PLIndex linearToPLIndex(LinearIndex linearIndex){
@@ -396,59 +360,37 @@ public class TheoryUtil {
         }
         len[line.length-1]--;
 
-        // Debug
-        for(int i=0;i<line.length;i++){
-            if(debug) System.out.println(line[i]+"\n"+len[i]);
-        }
-
         int lineIndex=-1, word=-1;
         for(int i=0;i<line.length;i++){
             if(index < len[i]){
                 if(i==0){
                     lineIndex=0;
                     word=index;
-                    if(debug)
-                        if(word==line[lineIndex].length())System.out.println("Exam the converted string \\n");
-                        else System.out.println("Exam the converted string "+line[lineIndex].charAt(word));
                     break;
                 }
                 else{
                     lineIndex=i;
-
                     word=index-len[i-1];
-                    if(debug)
-                        if(word==line[lineIndex].length())System.out.println("Exam the converted string \\n");
-                        else System.out.println("Exam the converted string "+line[lineIndex].charAt(word));
                     break;
                 }
             }
         }
 
-        PLIndex ret=new PLIndex(page, lineIndex, word);
-        if(debug)System.out.println("Result page "+page+" line "+ lineIndex +" word "+word);
-        return ret;
+        return new PLIndex(page, lineIndex, word);
     }
 
     /*
-     * 從 startPage 頁的 fromIndex 位置開始取出有效字元，以 direct 方向決定向前取或向後取。所謂有效字元即不包含 "<b>","</b>","<n>", "</n>", "<s>", "</s>" 等標籤字元，但包含換行[\n]符號。
+     * 從 startPage 頁的 fromIndex 位置開始取出有效字元，以 direct 方向決定向前取或向後取。所謂有效字元即不包含 "‧", "。", "<b>", "</b>", "<n>", "</n>", "<s>", "</s>" 等標籤與側標字元，但包含換行[\n]符號。
      *
      * Get content of page of theory data, the data exclude "<b>","</b>","<n>", "</n>", "<s>", "</s>" but include '\n'.
      * The direct must be MyListView.TO_START(from 0 to fromIndex) or MyListView.TO_END(from fromIndex to end of content).
      * */
     public String getContentStr(int startPage, int fromIndex, int direct){
         if(debug)System.out.println("Get content string page: "+startPage+", startWord: "+fromIndex);
-        String page=bookContent[startPage].replace("‧", "").replace("。", "");
-        page=page.replace("<b>", "");
-        page=page.replace("</b>", "");
-        page=page.replace("<n>", "");
-        page=page.replace("</n>", "");
-        page=page.replace("<s>", "");
-        page=page.replace("</s>", "");
+        String page=bookContent[startPage].replaceAll("[‧。]", "").replaceAll("</?.>", "");
 
-        String result=null;
-        if(direct == TO_START)result=page.substring(0,fromIndex);
-        else result=page.substring(fromIndex);
+        if(direct == TO_START)return page.substring(0,fromIndex);
+        return page.substring(fromIndex);
 
-        return result;
     }
 }

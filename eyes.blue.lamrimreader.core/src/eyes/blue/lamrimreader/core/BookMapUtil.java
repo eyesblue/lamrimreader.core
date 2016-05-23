@@ -20,13 +20,8 @@ public class BookMapUtil {
 
         for(int i=0;i<recStr.length;i++){
             String[] eleStr=recStr[i].split(",");
-            for(int j=0;j<eleStr.length;j++){
-                try{
+            for(int j=0;j<eleStr.length;j++)
                     rec[i][j]=Integer.parseInt(eleStr[j]);
-                }catch(ArrayIndexOutOfBoundsException aioob){
-                    System.out.println("BookMapUtil: "+ recStr[i]+" error.");
-                }
-            }
         }
 
         return rec;
